@@ -21,9 +21,9 @@ export default function Contact() {
           </motion.div>
           <motion.div className="contact-section__info" initial={{ opacity: 0, x: 40 }} animate={inView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.6, delay: 0.2 }}>
             {[
-              { icon: Mail,   label: 'Email',     value: 'hola@fabull.cl' },
-              { icon: Phone,  label: 'Teléfono',  value: '+56 9 XXXX XXXX' },
-              { icon: MapPin, label: 'Cobertura', value: 'Santiago y regiones' },
+              { icon: Mail,   label: 'Email',     value: 'servicios@fabull.cl' },
+              { icon: Phone,  label: 'Teléfono',  value: '+56 9 9597 4933' },
+              { icon: MapPin, label: 'Cobertura', value: 'Región Metropolitana' },
             ].map(({ icon: Icon, label, value }) => (
               <div key={label} className="contact-section__item">
                 <div className="contact-section__icon"><Icon size={20} /></div>
