@@ -1,60 +1,53 @@
+/*
+ * Fabull - Transporte
+ * Copyright (c) 2024 Gysunn. All rights reserved.
+ *
+ * LoginPage.jsx - Login page component
+ */
+
+// Import React hooks and components
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { useToast } from '../context/ToastContext'
+import { loginYRedirigir } from '../services/api'
 
-const BASE_URL = import.meta.env.VITE_API_URL || 'https://suited-marie-loopily.ngrok-free.dev/fabull'
-
+// LoginPage component for user authentication
 export default function LoginPage() {
+  // State for form data and loading status
   const { addToast } = useToast()
   const [form, setForm] = useState({ correo: '', password: '' })
   const [loading, setLoading] = useState(false)
 
+  // Handle input changes
   const handleChange = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }))
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
 
     try {
-      // Llamamos al endpoint JSON de usuario (no al PHP de sesión)
-      const res = await fetch(`${BASE_URL}/api/v1/usuario/index.php?accion=login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'ngrok-skip-browser-warning': 'true',
-        },
-        body: JSON.stringify({ correo: form.correo, password: form.password }),
-      })
-
-      const data = await res.json()
-
-      if (data?.success && data?.usuario) {
-        // Guardamos datos del usuario en localStorage
-        localStorage.setItem('fabull_user', JSON.stringify(data.usuario))
-        addToast(`¡Bienvenido, ${data.usuario.nombre_usuario || 'usuario'}!`, 'success')
-        // Redirigimos al panel PHP con las credenciales ya validadas
-        setTimeout(() => {
-          window.location.href = `${BASE_URL}/php/index.php`
-        }, 800)
-      } else {
-        addToast(data?.message || 'Credenciales incorrectas. Intenta de nuevo.', 'error')
-      }
+      // Call the login function to redirect to the panel
+      loginYRedirigir(form.correo, form.password)
     } catch {
+      // Show error toast if login fails
       addToast('Error de conexión con el servidor.', 'error')
-    } finally {
       setLoading(false)
     }
   }
 
+  // Render the login form UI
   return (
     <main className="login-page">
+      // Animated login card
       <motion.div
         className="login-card"
         initial={{ opacity: 0, y: 30, scale: 0.96 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.5 }}
       >
+        // Header with logo and title
         <div className="login-card__header">
           <Link to="/" className="login-card__logo">
             <img src="/toro.png" alt="Fabull" className="login-card__logo-img" />
@@ -63,7 +56,9 @@ export default function LoginPage() {
           <p className="login-card__subtitle">Panel de operaciones Fabull</p>
         </div>
 
+        // Login form
         <form onSubmit={handleSubmit} className="login-card__form">
+          // Email input field
           <div className="form-field">
             <label htmlFor="correo">Correo electrónico</label>
             <input
@@ -73,6 +68,7 @@ export default function LoginPage() {
               autoComplete="email"
             />
           </div>
+          // Password input field
           <div className="form-field">
             <label htmlFor="password">Contraseña</label>
             <input
@@ -82,6 +78,7 @@ export default function LoginPage() {
               autoComplete="current-password"
             />
           </div>
+          // Submit button
           <button type="submit" disabled={loading}>
             {loading
               ? <><span className="form-spinner" style={{ borderTopColor: 'white', marginRight: 8 }} /> Verificando...</>
@@ -91,7 +88,9 @@ export default function LoginPage() {
         </form>
 
       </motion.div>
+      // Background element
       <div className="login-page__bg" aria-hidden />
     </main>
   )
+}
 }

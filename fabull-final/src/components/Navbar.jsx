@@ -3,6 +3,8 @@ import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
 
+const BASE_URL = 'https://fabull.cl'
+
 const links = [
   { to: '/',            label: 'Inicio' },
   { to: '/nosotros',    label: 'Nosotros' },
@@ -48,7 +50,7 @@ export default function Navbar() {
           ))}
         </nav>
 
-        <Link to="/login" className="navbar__btn">Panel →</Link>
+        <button onClick={() => window.location.href = `${BASE_URL}/index.php`} className="navbar__btn">Panel →</button>
 
         <button className="navbar__menu-btn" onClick={() => setOpen(!open)} aria-label="menu">
           {open ? <X size={22} /> : <Menu size={22} />}
@@ -69,7 +71,7 @@ export default function Navbar() {
                 <Link to={to} className="navbar__mobile-link">{label}</Link>
               </motion.div>
             ))}
-            <Link to="/login" className="navbar__mobile-cta">Panel de acceso →</Link>
+            <button onClick={() => window.location.href = `${BASE_URL}/index.php`} className="navbar__mobile-cta">Panel de acceso →</button>
           </motion.div>
         )}
       </AnimatePresence>

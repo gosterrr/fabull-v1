@@ -15,7 +15,6 @@ export default function Footer() {
       items: [
         { label: 'Nosotros', path: '/nosotros', enabled: true },
         { label: 'Contacto', path: '/contacto', enabled: true },
-        { label: 'Panel', path: '/login', enabled: true },
       ],
     },
     {
