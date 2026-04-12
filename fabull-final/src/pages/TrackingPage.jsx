@@ -9,13 +9,14 @@ const API_URL   = 'https://fabull.cl/api/v1/rastreo.php'
 const API_TOKEN = 'Fb_2026_!92k_LzPq_W87x_#Scur1ty_Fabull'
 
 const ESTADOS = {
-  'INGRESADO':    { color: '#5a7a96', bg: '#f0f6fc', border: '#c5dff0', icon: Clock,       label: 'Ingresado en sistema' },
-  'POR ENTREGAR': { color: '#2a8ac4', bg: '#e8f4fd', border: '#4FB3E8', icon: Package,     label: 'Por entregar' },
-  'EN REPARTO':   { color: '#d97706', bg: '#fffbeb', border: '#fcd34d', icon: Truck,       label: 'En camino' },
-  'ENTREGADO':    { color: '#10b981', bg: '#ecfdf5', border: '#6ee7b7', icon: CheckCircle, label: 'Entregado' },
-  'TERCERO':      { color: '#8b5cf6', bg: '#f5f3ff', border: '#c4b5fd', icon: User,        label: 'Entregado a tercero' },
-  'DEVOLUCION':   { color: '#ef4444', bg: '#fef2f2', border: '#fca5a5', icon: RotateCcw,   label: 'En devolución' },
-  'NO ENTREGADO': { color: '#ef4444', bg: '#fef2f2', border: '#fca5a5', icon: XCircle,     label: 'No entregado' },
+  'INGRESADO':           { color: '#5a7a96', bg: '#f0f6fc', border: '#c5dff0', icon: Clock,       label: 'Ingresado en sistema' },
+  'RECIBIDO':            { color: '#2a8ac4', bg: '#e8f4fd', border: '#4FB3E8', icon: Package,     label: 'Recibido' },
+  'POR ENTREGAR':        { color: '#2a8ac4', bg: '#e8f4fd', border: '#4FB3E8', icon: Package,     label: 'Por entregar' },
+  'PENDIENTE':           { color: '#d97706', bg: '#fffbeb', border: '#fcd34d', icon: Truck,       label: 'Por entregar' },
+  'EN REPARTO':          { color: '#d97706', bg: '#fffbeb', border: '#fcd34d', icon: Truck,       label: 'Por entregar' },
+  'ENTREGADO A TITULAR': { color: '#10b981', bg: '#ecfdf5', border: '#6ee7b7', icon: CheckCircle, label: 'Entregado' },
+  'ENTREGADO A TERCERO': { color: '#8b5cf6', bg: '#f5f3ff', border: '#c4b5fd', icon: User,        label: 'Entregado a tercero' },
+  'DEVOLUCION':          { color: '#ef4444', bg: '#fef2f2', border: '#fca5a5', icon: RotateCcw,   label: 'En devolución' },
 }
 
 function getEstadoInfo(nombre) {
@@ -25,10 +26,10 @@ function getEstadoInfo(nombre) {
 }
 
 const PASOS = [
-  { label: 'Ingresado',    match: ['INGRESADO'] },
-  { label: 'Por entregar', match: ['POR ENTREGAR'] },
-  { label: 'En reparto',   match: ['EN REPARTO'] },
-  { label: 'Finalizado',   match: ['ENTREGADO', 'TERCERO', 'DEVOLUCION', 'NO ENTREGADO'] },
+  { label: 'Ingresado',      match: ['INGRESADO'] },
+  { label: 'Recibido',       match: ['RECIBIDO'] },
+  { label: 'Por entregar',   match: ['POR ENTREGAR', 'PENDIENTE', 'EN REPARTO'] },
+  { label: 'Finalizado',     match: ['ENTREGADO A TITULAR', 'ENTREGADO A TERCERO', 'DEVOLUCION'] },
 ]
 
 function getPasoActivo(estado) {
@@ -69,6 +70,8 @@ export default function TrackingPage() {
 
       // El JSON viene como: { status: "success", data: { ... } }
       if (json?.status === 'success' && json?.data) {
+        console.log('Estado recibido:', json.data.nombre_estado)
+        console.log('JSON completo:', json.data)
         setResultado(json.data)
       } else {
         setError('No encontramos un pedido con ese número. Verifica e intenta de nuevo.')
@@ -84,7 +87,7 @@ export default function TrackingPage() {
   const estadoInfo = resultado ? getEstadoInfo(resultado.nombre_estado) : null
   const pasoActivo = resultado ? getPasoActivo(resultado.nombre_estado) : -1
   const IconEstado = estadoInfo?.icon || Clock
-  const isFailed   = resultado && ['DEVOLUCION', 'NO ENTREGADO'].some(k =>
+  const isFailed   = resultado && ['DEVOLUCION'].some(k =>
     resultado.nombre_estado?.toUpperCase().includes(k)
   )
 
